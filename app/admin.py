@@ -1,13 +1,13 @@
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Filter, CommandStart, Command
-
+import keyboards as kb
 admin = Router()
 
 
 class Admin(Filter):
     def __init__(self):
-        self.admins = [123, 456]
+        self.admins = [5367336020, 7494593041]
 
     async def __call__(self, message: Message):
         return message.from_user.id in self.admins
@@ -15,4 +15,4 @@ class Admin(Filter):
 
 @admin.message(Admin(), Command('admin'))
 async def cmd_start(message: Message):
-    await message.answer('Добро пожаловать в бот, администратор!')
+    await message.answer('Admin panel')

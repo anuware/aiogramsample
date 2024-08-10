@@ -1,5 +1,5 @@
 from aiogram.fsm.state import State, StatesGroup
 
 
-class RegExample(StatesGroup):
+class States(StatesGroup):
     pass #states here
