@@ -1,7 +1,7 @@
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Filter, CommandStart, Command
-import keyboards as kb
+import app.keyboards as kb
 admin = Router()
 
 
