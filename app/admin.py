@@ -10,14 +10,14 @@ from app.database.requests import change_user_rank, get_user_rank
 
 admin = Router()
 
-
-class Admin(Filter):
-    def __init__(self):
-        self.admins = []
-
-    async def __call__(self, message: Message):
-        return message.from_user.id in self.admins
-    
+@admin.message(Command("init_owner"))
+async def init_owner(message: Message):
+    user_rank = await get_user_rank(message.from_user.id)
+    if user_rank is None:  # Если в базе еще нет пользователей с рангами
+        await change_user_rank(message.from_user.id, Ranks.OWNER)
+        await message.answer("✅ Вы назначены владельцем бота")
+    else:
+        await message.answer("❌ Владелец уже назначен")
 
 @admin.message(Admin(), Command('admin'))
 async def cmd_start(message: Message):

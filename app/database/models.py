@@ -1,11 +1,15 @@
-from sqlalchemy import ForeignKey, String, BigInteger
+from datetime import datetime
+from sqlalchemy import ForeignKey, String, BigInteger, DateTime, Boolean, Index
 from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase, relationship
 from sqlalchemy.ext.asyncio import AsyncAttrs, async_sessionmaker, create_async_engine
 from config_reader import config 
-DB_URL=config.DB_URL.get_secret_value()
 
-engine = create_async_engine(url=DB_URL,
-                             echo=False) # Set True if you want see all logs
+DB_URL = config.DB_URL.get_secret_value()
+
+engine = create_async_engine(
+    url=DB_URL,
+    echo=False
+)
     
 async_session = async_sessionmaker(engine)
 
@@ -18,9 +22,20 @@ class User(Base):
     __tablename__ = 'users'
     
     id: Mapped[int] = mapped_column(primary_key=True)
-    tg_id = mapped_column(BigInteger)
-    rank = mapped_column(String(32), default='Пользователь')
-    username = mapped_column(String(32))
+    tg_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=False)
+    username: Mapped[str] = mapped_column(String(32), nullable=False)
+    rank: Mapped[str] = mapped_column(String(32), default='Пользователь', nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    last_active: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+
+    __table_args__ = (
+        Index('idx_tg_id', 'tg_id'),
+        Index('idx_username', 'username'),
+    )
+
+    def __repr__(self):
+        return f"<User(id={self.id}, tg_id={self.tg_id}, username={self.username}, rank={self.rank})>"
 
 
 async def async_main():
