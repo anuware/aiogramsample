@@ -10,5 +10,6 @@ user = Router()
 
 @user.message(CommandStart())
 async def cmd_start(message: Message):
+    await set_user(message.from_user.id, message.from_user.username)
     await message.answer('qq')
     

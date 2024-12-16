@@ -7,10 +7,13 @@ from app.user_handlers import user
 from app.admin import admin
 from app.logging import setup_logger
 from config_reader import config
+from app.database.models import async_main 
 
 
     
 async def main():
+    await async_main()
+    
     logger = setup_logger()
     bot = Bot(token=config.TOKEN.get_secret_value(),
               default=DefaultBotProperties(parse_mode=ParseMode.HTML))
@@ -18,7 +21,7 @@ async def main():
     dp = Dispatcher()
     dp.include_routers(user, admin)
     
-    logger.info("Бот запущен")
+    logger.info("Бот запущен") 
     await dp.start_polling(bot)
 
 
