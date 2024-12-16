@@ -1,22 +1,10 @@
 from datetime import datetime
 from sqlalchemy import ForeignKey, String, BigInteger, DateTime, Boolean, Index
-from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase, relationship
-from sqlalchemy.ext.asyncio import AsyncAttrs, async_sessionmaker, create_async_engine
-from config_reader import config 
-
-DB_URL = config.DB_URL.get_secret_value()
-
-engine = create_async_engine(
-    url=DB_URL,
-    echo=False
-)
-    
-async_session = async_sessionmaker(engine)
-
+from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
+from sqlalchemy.ext.asyncio import AsyncAttrs
 
 class Base(AsyncAttrs, DeclarativeBase):
     pass
-
 
 class User(Base):
     __tablename__ = 'users'
@@ -36,8 +24,3 @@ class User(Base):
 
     def __repr__(self):
         return f"<User(id={self.id}, tg_id={self.tg_id}, username={self.username}, rank={self.rank})>"
-
-
-async def async_main():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)

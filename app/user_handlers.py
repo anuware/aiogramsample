@@ -3,6 +3,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.filters import CommandStart, Command
 
 from app.database.requests import set_user
+from app.database.session import session
 
 import app.keyboards as kb
 
@@ -12,4 +13,3 @@ user = Router()
 async def cmd_start(message: Message):
     await set_user(message.from_user.id, message.from_user.username)
     await message.answer('qq')
-    
