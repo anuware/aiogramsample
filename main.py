@@ -1,30 +1,71 @@
 import asyncio
+import logging
+from typing import NoReturn
+
 from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
-from aiogram.client.default import DefaultBotProperties
+from aiogram.fsm.storage.memory import MemoryStorage
 
-from app.handlers.user import user
-from app.handlers.admin import admin
-from app.logging import setup_logger
-from app.core import config
+from app.core.config import config
+from app.core.logging import logger
+from app.handlers import routers
+from app.database.base import engine
 from app.database.models import Base
-from app.database.session import engine, init_db
+from app.middlewares.database import DatabaseMiddleware
 
-async def main():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    
-    await init_db()
-    
-    bot = Bot(
-        token=config.TOKEN.get_secret_value(),
-        default=DefaultBotProperties(parse_mode=ParseMode.HTML)
-    )
-    dp = Dispatcher()
-    
-    dp.include_routers(user, admin)
-    
-    await dp.start_polling(bot)
 
-if __name__ == '__main__':
+class BotApp:
+    def __init__(self):
+        self.storage = MemoryStorage()
+        self.bot = Bot(token=config.BOT_TOKEN, parse_mode=ParseMode.HTML)
+        self.dp = Dispatcher(storage=self.storage)
+    
+    async def setup_database(self) -> None:
+        logger.info("Инициализация базы данных")
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+    
+    def setup_middlewares(self) -> None:
+        logger.info("Подключение middleware")
+        self.dp.update.middleware(DatabaseMiddleware())
+    
+    def setup_routers(self) -> None:
+        logger.info("Подключение роутеров")
+        for router in routers:
+            self.dp.include_router(router)
+    
+    async def setup(self) -> None:
+        await self.setup_database()
+        self.setup_middlewares()
+        self.setup_routers()
+        logger.info("Бот успешно настроен")
+    
+    async def start(self) -> None:
+        logger.info("Запуск бота")
+        try:
+            await self.setup()
+            await self.dp.start_polling(self.bot)
+        except Exception as e:
+            logger.error(f"Ошибка при запуске: {e}")
+            raise
+        finally:
+            await self.stop()
+    
+    async def stop(self) -> None:
+        logger.info("Остановка бота")
+        await self.bot.session.close()
+
+
+async def main() -> NoReturn:
+    bot_app = BotApp()
+    try:
+        await bot_app.start()
+    except (KeyboardInterrupt, SystemExit):
+        logger.info("Бот остановлен вручную")
+    except Exception as e:
+        logger.critical(f"Критическая ошибка: {e}")
+        raise
+
+
+if __name__ == "__main__":
     asyncio.run(main())
