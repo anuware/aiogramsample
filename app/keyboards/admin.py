@@ -1,6 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-def get_admin_keyboard() -> InlineKeyboardMarkup:
+async def get_admin_keyboard() -> InlineKeyboardMarkup:
     buttons = [
         [
             InlineKeyboardButton(text="👥 Пользователи", callback_data="users_list"),

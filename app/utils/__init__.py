@@ -1,1 +1,1 @@
-from .utils import const
+from .constants import UserRoles
