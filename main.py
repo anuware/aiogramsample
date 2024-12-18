@@ -3,10 +3,10 @@ from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 
-from app.user_handlers import user
-from app.admin import admin
+from app.handlers.user import user
+from app.handlers.admin import admin
 from app.logging import setup_logger
-from config_reader import config
+from app.core import config
 from app.database.models import Base
 from app.database.session import engine, init_db
 
