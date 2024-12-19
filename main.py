@@ -17,7 +17,7 @@ from app.middlewares import DatabaseMiddleware
 class BotApp:
     def __init__(self):
         self.storage = MemoryStorage()
-        self.bot = Bot(token=config.token, parse_mode=ParseMode.HTML)
+        self.bot = Bot(token=config.BOT_TOKEN)
         self.dp = Dispatcher(storage=self.storage)
 
 
