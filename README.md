@@ -6,7 +6,7 @@
 
 ## Описание
 
-Этот проект представляет собой Telegram-бота, разработанного с использованием библиотеки [aiogram](https://docs.aiogram.dev/en/latest/) и ORM [SQLAlchemy](https://www.sqlalchemy.org/). Бот предназначен для управления пользователями и выполнения различных команд.
+Этот проект представляет собой Telegram-бота, разработанного с использованием библиотеки [aiogram](https://docs.aiogram.dev/en/latest/) и ORM [SQLAlchemy](https://www.sqlalchemy.org/).
 
 ## Функционал
 
