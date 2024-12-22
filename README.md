@@ -1,4 +1,4 @@
-# Telegram Bot - aiogramsample
+# aiogramsample
 
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![aiogram](https://img.shields.io/badge/aiogram-3.7.0-blue)
@@ -9,9 +9,6 @@
 Этот проект представляет собой Telegram-бота, разработанного с использованием библиотеки [aiogram](https://docs.aiogram.dev/en/latest/) и ORM [SQLAlchemy](https://www.sqlalchemy.org/).
 
 ## Функционал
-
-
- - Бот имеет самый основной функционал:
  - Основа базы данных
  - Архитектура
  - Безопасность токентов и другой информации
